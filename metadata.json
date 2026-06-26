@@ -1,0 +1,6 @@
+{
+  "name": "Saliguri Management App",
+  "description": "Offline-first reservation management app.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
