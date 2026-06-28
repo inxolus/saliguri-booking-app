@@ -145,6 +145,7 @@ data class Reservation(
     @ColumnInfo(name = "paid_amount") val paidAmount: Long,
     @ColumnInfo(name = "payment_status") val paymentStatus: String = "PENDING",
     @ColumnInfo(name = "payment_method_code") val paymentMethodCode: String?,
+    @ColumnInfo(name = "payment_proof_url") val paymentProofUrl: String? = null,
     val notes: String?,
     @ColumnInfo(name = "created_by") val createdBy: String?,
     @ColumnInfo(name = "created_at") val createdAt: Long,
@@ -180,7 +181,10 @@ data class ReservationUnit(
 
 @Entity(
     tableName = "reservation_services",
-    indices = [Index(value = ["reservation_id"])],
+    indices = [
+        Index(value = ["reservation_id"]),
+        Index(value = ["service_code"])
+    ],
     foreignKeys = [
         ForeignKey(entity = Reservation::class, parentColumns = ["id"], childColumns = ["reservation_id"], onDelete = ForeignKey.CASCADE),
         ForeignKey(entity = ServiceModel::class, parentColumns = ["code"], childColumns = ["service_code"])
@@ -198,7 +202,10 @@ data class ReservationService(
 
 @Entity(
     tableName = "reservation_foods",
-    indices = [Index(value = ["reservation_id"])],
+    indices = [
+        Index(value = ["reservation_id"]),
+        Index(value = ["food_package_code"])
+    ],
     foreignKeys = [
         ForeignKey(entity = Reservation::class, parentColumns = ["id"], childColumns = ["reservation_id"], onDelete = ForeignKey.CASCADE),
         ForeignKey(entity = FoodPackage::class, parentColumns = ["code"], childColumns = ["food_package_code"])
@@ -216,7 +223,10 @@ data class ReservationFood(
 
 @Entity(
     tableName = "payments",
-    indices = [Index(value = ["reservation_id"])],
+    indices = [
+        Index(value = ["reservation_id"]),
+        Index(value = ["payment_method_code"])
+    ],
     foreignKeys = [
         ForeignKey(entity = Reservation::class, parentColumns = ["id"], childColumns = ["reservation_id"], onDelete = ForeignKey.CASCADE),
         ForeignKey(entity = PaymentMethod::class, parentColumns = ["code"], childColumns = ["payment_method_code"])
@@ -254,6 +264,14 @@ data class ReservationWithGuestName(
     @ColumnInfo(name = "down_payment") val downPayment: Long,
     @ColumnInfo(name = "paid_amount") val paidAmount: Long,
     @ColumnInfo(name = "payment_status") val paymentStatus: String,
+    @ColumnInfo(name = "payment_method_code") val paymentMethodCode: String?,
+    @ColumnInfo(name = "payment_proof_url") val paymentProofUrl: String? = null,
+    val notes: String?,
+    @ColumnInfo(name = "created_by") val createdBy: String?,
+    @ColumnInfo(name = "created_at") val createdAt: Long,
+    @ColumnInfo(name = "updated_at") val updatedAt: Long,
+    @ColumnInfo(name = "actual_check_in") val actualCheckIn: Long?,
+    @ColumnInfo(name = "actual_check_out") val actualCheckOut: Long?,
     val guest_name: String,
     val guest_phone: String
 )

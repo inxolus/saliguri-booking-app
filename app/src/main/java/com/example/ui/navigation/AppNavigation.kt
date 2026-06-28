@@ -16,7 +16,7 @@ import com.example.ui.screens.ReservationListScreen
 import com.example.ui.screens.ReservationFormScreen
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(startDestination: String = "login") {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -30,7 +30,7 @@ fun AppNavigation() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "login",
+            startDestination = startDestination,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("login") { LoginScreen(navController) }

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "306523527467",
+    "project_id": "saliguri",
+    "storage_bucket": "saliguri.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:306523527467:android:e5409ac666164c88dc4d6e",
+        "android_client_info": {
+          "package_name": "com.aistudio.saligurimanagement.pvwkly"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC62st83ZBBr_cIyClgMd1PmLRtKGP4K8w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:306523527467:android:7f95fcd20bedd05ddc4d6e",
+        "android_client_info": {
+          "package_name": "com.example"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC62st83ZBBr_cIyClgMd1PmLRtKGP4K8w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

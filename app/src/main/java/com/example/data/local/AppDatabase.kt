@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.example.saliguri.repository.SyncTypeConverters
 import com.example.data.models.*
 import kotlinx.coroutines.launch
 
@@ -23,14 +25,21 @@ import kotlinx.coroutines.launch
         ReservationUnit::class,
         ReservationService::class,
         ReservationFood::class,
-        Payment::class
+        Payment::class,
+        com.example.saliguri.repository.SyncReservation::class,
+        com.example.saliguri.repository.SyncRoom::class,
+        com.example.saliguri.repository.SyncGuest::class
     ],
-    version = 2,
+    version = 6,
     exportSchema = false
 )
+@TypeConverters(SyncTypeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun appDao(): AppDao
     abstract fun reportDao(): ReportDao
+    abstract fun reservationDao(): com.example.saliguri.repository.ReservationDao
+    abstract fun roomDao(): com.example.saliguri.repository.RoomDao
+    abstract fun syncGuestDao(): com.example.saliguri.repository.SyncGuestDao
 
     companion object {
         @Volatile

@@ -15,6 +15,19 @@ import com.example.ui.theme.*
 import com.example.ui.viewmodels.DetailViewModel
 import com.example.utils.Formatters
 import com.example.utils.StatusConfig
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.ui.platform.LocalContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,6 +103,8 @@ fun ReservationDetailScreen(
                         Text("Notes: ${res.notes}")
                     }
                 }
+
+                PaymentProofSection(res)
 
                 // Units Info
                 if (units.isNotEmpty()) {
@@ -248,6 +263,105 @@ fun ReservationDetailScreen(
                 Spacer(modifier = Modifier.height(32.dp))
             }
         }
+    }
+}
+
+@Composable
+fun PaymentProofSection(
+    reservation: com.example.data.models.Reservation
+) {
+    val context = LocalContext.current
+    
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Surface)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text("💳 Pembayaran", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Primary)
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            // Metode
+            val methodLabel = when(reservation.paymentMethodCode) {
+                "bca_transfer" -> "Transfer BCA"
+                "mandiri_transfer" -> "Transfer Mandiri"
+                "down_payment" -> "Down Payment (DP)"
+                "cash_onsite" -> "Bayar di Tempat (Cash)"
+                else -> reservation.paymentMethodCode ?: "Belum ada"
+            }
+            InfoRow("Metode", methodLabel)
+            
+            // Status bayar
+            when(reservation.paymentMethodCode) {
+                "cash_onsite" -> {
+                    InfoRow("Status", "Belum dibayar", color = Color(0xFFe67e22))
+                    Text(
+                        "💵 Tamu akan membayar cash saat check-in",
+                        fontSize = 13.sp,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
+                "down_payment" -> {
+                    InfoRow("DP", Formatters.currency(reservation.downPayment), color = Color(0xFF3498db))
+                    InfoRow("Sisa", Formatters.currency(maxOf(0L, reservation.totalAmount - reservation.paidAmount)), color = Color(0xFFe74c3c))
+                }
+                else -> {
+                    InfoRow("Dibayar", Formatters.currency(reservation.paidAmount), color = Color(0xFF27ae60))
+                }
+            }
+            
+            // Bukti pembayaran (gambar)
+            if (!reservation.paymentProofUrl.isNullOrEmpty()) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text("Bukti Pembayaran:", fontWeight = FontWeight.SemiBold)
+                
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .padding(top = 8.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(reservation.paymentProofUrl))
+                            context.startActivity(intent)
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    AsyncImage(
+                        model = reservation.paymentProofUrl,
+                        contentDescription = "Bukti",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.3f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("🔍 Tap untuk lihat", color = Color.White, fontWeight = FontWeight.Bold)
+                    }
+                }
+            } else if (reservation.paymentMethodCode != "cash_onsite") {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("⚠️ Belum ada bukti pembayaran", color = Color(0xFFe74c3c), fontSize = 14.sp)
+            }
+        }
+    }
+}
+
+@Composable
+fun InfoRow(label: String, value: String, color: Color = Color.Unspecified) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(label, color = Color.Gray, fontSize = 14.sp)
+        Text(value, fontWeight = FontWeight.SemiBold, color = color, fontSize = 14.sp)
     }
 }
 
